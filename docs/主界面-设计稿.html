@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>主界面设计稿 · 菜单栏截图与剪贴板</title>
+<style>
+  :root {
+    --label: #1d1d1f;
+    --secondary: rgba(60, 60, 67, 0.62);
+    --tertiary: rgba(60, 60, 67, 0.36);
+    --blue: #007aff;
+    --green: #34c759;
+    --orange: #ff9f0a;
+    --red: #ff3b30;
+    --fill: rgba(120, 120, 128, 0.16);
+    --fill-strong: rgba(120, 120, 128, 0.24);
+    --separator: rgba(60, 60, 67, 0.18);
+    --panel: rgba(255, 255, 255, 0.78);
+    --panel-solid: #f6f6f6;
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.18), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+    --font: "SF Pro Text", "SF Pro Display", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    color: var(--label);
+    background: #e7e7ec;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 36px 28px 80px;
+  }
+
+  header.top h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+  header.top p {
+    margin: 0;
+    max-width: 760px;
+    color: #3a3a3c;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip {
+    font-size: 12px;
+    line-height: 1;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    color: #3a3a3c;
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.08);
+  }
+
+  section { margin-top: 36px; }
+  .section-kicker {
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  h2 { margin: 0 0 8px; font-size: 20px; letter-spacing: -0.02em; }
+  .note {
+    margin: 0 0 14px;
+    color: #3a3a3c;
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 820px;
+  }
+
+  .desktop {
+    position: relative;
+    height: 640px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.06);
+    background:
+      radial-gradient(900px 420px at 12% 80%, rgba(255, 186, 120, 0.85), transparent 60%),
+      radial-gradient(700px 480px at 78% 18%, rgba(92, 154, 255, 0.75), transparent 55%),
+      radial-gradient(500px 380px at 60% 70%, rgba(255, 255, 255, 0.45), transparent 50%),
+      linear-gradient(160deg, #7aa2ff 0%, #d7c4ff 42%, #ffd0a8 100%);
+  }
+  .desktop.plain {
+    height: auto;
+    min-height: 560px;
+    background: #d8d8de;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 20px 56px;
+  }
+
+  .menubar {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px 0 12px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(24px) saturate(1.4);
+    font-size: 13px;
+    font-weight: 560;
+    z-index: 5;
+  }
+  .menubar .apple { font-size: 15px; margin-right: 14px; }
+  .menubar .appname { margin-right: auto; }
+  .menubar .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .menu-item-hit {
+    width: 28px;
+    height: 20px;
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    background: rgba(0,0,0,0.12);
+  }
+  .glyph { width: 15px; height: 15px; display: block; }
+
+  .dropdown {
+    position: absolute;
+    top: 32px;
+    right: 118px;
+    width: 228px;
+    padding: 5px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(30px) saturate(1.5);
+    box-shadow: var(--shadow);
+    z-index: 6;
+    font-size: 13px;
+  }
+  .dropdown .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    border-radius: 6px;
+  }
+  .dropdown .row.on { background: var(--blue); color: white; }
+  .dropdown .row.on kbd { color: rgba(255,255,255,0.86); }
+  .dropdown .row kbd {
+    color: var(--secondary);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .dropdown .sep { height: 1px; margin: 4px 8px; background: var(--separator); }
+
+  .history {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    height: 92px;
+    border-radius: 14px;
+    background: var(--panel);
+    backdrop-filter: blur(40px) saturate(1.6);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    z-index: 4;
+  }
+  .filters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2px 4px;
+    width: 104px;
+    flex: none;
+    align-content: center;
+  }
+  .filters span {
+    font-size: 11px;
+    line-height: 20px;
+    height: 20px;
+    color: var(--secondary);
+    padding: 0 6px;
+    border-radius: 5px;
+  }
+  .filters span.on {
+    background: rgba(0,0,0,0.08);
+    color: var(--label);
+    font-weight: 600;
+  }
+  .scroller {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+  .card {
+    flex: none;
+    height: 64px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.72);
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.08);
+    overflow: hidden;
+    position: relative;
+  }
+  .card.shot { width: 96px; }
+  .card.text {
+    width: 168px;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.35;
+    color: #1d1d1f;
+  }
+  .card.link {
+    width: 150px;
+    padding: 8px 10px;
+    font-size: 11px;
+    line-height: 1.35;
+    color: var(--blue);
+  }
+  .card.color {
+    width: 64px;
+    display: flex;
+    flex-direction: column;
+  }
+  .swatch { flex: 1; background: #3d7a5a; }
+  .hex {
+    height: 18px;
+    font-size: 10px;
+    text-align: center;
+    line-height: 18px;
+    color: var(--secondary);
+    background: rgba(255,255,255,0.8);
+  }
+  .mini-window {
+    height: 100%;
+    background: #f4f4f5;
+    padding: 6px;
+  }
+  .mini-window .bar {
+    height: 8px;
+    border-radius: 2px;
+    background: #ff3b30;
+    width: 46%;
+    margin-bottom: 5px;
+  }
+  .mini-window .line {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.12);
+    margin-bottom: 3px;
+  }
+  .mini-window .line.short { width: 70%; }
+  .photo {
+    height: 100%;
+    background:
+      linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.25)),
+      linear-gradient(160deg, #8ec5ff, #7dcea0 55%, #e7c07b);
+  }
+  .side {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+  }
+  .usage { width: 86px; text-align: right; }
+  .usage b {
+    display: block;
+    font-size: 12px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+  .usage em {
+    display: block;
+    margin-top: 4px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--fill);
+    overflow: hidden;
+    font-style: normal;
+  }
+  .usage em i {
+    display: block;
+    width: 43%;
+    height: 100%;
+    background: var(--blue);
+  }
+  .search {
+    width: 132px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--fill);
+    color: var(--secondary);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+  }
+
+  .preview {
+    position: absolute;
+    left: 318px;
+    bottom: 128px;
+    width: 260px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(24px);
+    box-shadow: var(--shadow);
+    z-index: 5;
+  }
+  .preview .pic {
+    height: 148px;
+    background:
+      linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.28)),
+      linear-gradient(160deg, #8ec5ff, #7dcea0 55%, #e7c07b);
+  }
+  .preview .meta {
+    padding: 8px 10px 10px;
+    font-size: 12px;
+    color: var(--secondary);
+  }
+  .preview .meta strong {
+    display: block;
+    color: var(--label);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .shade-selection {
+    position: absolute;
+    left: 210px;
+    top: 132px;
+    width: 560px;
+    height: 300px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.42);
+    outline: 1.5px solid #fff;
+    z-index: 3;
+  }
+  .handle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border: 1px solid var(--blue);
+    border-radius: 1px;
+  }
+  .handle.nw { left: -4px; top: -4px; }
+  .handle.ne { right: -4px; top: -4px; }
+  .handle.sw { left: -4px; bottom: -4px; }
+  .handle.se { right: -4px; bottom: -4px; }
+  .size-badge {
+    position: absolute;
+    left: 8px;
+    top: -26px;
+    background: rgba(0,0,0,0.72);
+    color: white;
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .mosaic {
+    position: absolute;
+    left: 248px;
+    top: 112px;
+    width: 250px;
+    height: 22px;
+    background-image:
+      linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+      linear-gradient(45deg, #6d8eb8 25%, #8faf7a 25% 50%, #d7c48a 50% 75%, #6d8eb8 75%);
+    background-size: 8px 8px, 8px 8px, 16px 16px;
+    filter: contrast(0.85);
+    border-radius: 2px;
+  }
+  .fake-page {
+    position: absolute;
+    left: 210px;
+    top: 132px;
+    width: 560px;
+    height: 300px;
+    background: #fff;
+    z-index: 2;
+    padding: 18px 20px;
+    color: #1d1d1f;
+  }
+  .fake-page .url {
+    font-size: 11px;
+    color: var(--secondary);
+    margin-bottom: 12px;
+  }
+  .fake-page h3 { margin: 0 0 8px; font-size: 18px; }
+  .fake-page p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: #3a3a3c; }
+
+  .toolbar {
+    position: absolute;
+    left: 250px;
+    top: 446px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(30px) saturate(1.5);
+    box-shadow: var(--shadow);
+  }
+  .tool {
+    width: 32px;
+    height: 28px;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    color: var(--label);
+  }
+  .tool.on { background: var(--blue); color: white; }
+  .tool span { font-size: 12px; font-weight: 650; }
+  .vsep { width: 1px; height: 18px; background: var(--separator); margin: 0 3px; }
+
+  .pin {
+    position: absolute;
+    left: 390px;
+    top: 150px;
+    width: 420px;
+    height: 250px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.28), 0 0 0 0.5px rgba(0,0,0,0.2);
+    z-index: 4;
+    background: #fff;
+  }
+  .pin .body {
+    height: 100%;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.0), rgba(0,0,0,0.08)),
+      linear-gradient(160deg, #f7f1e8, #e7eef8 40%, #f3f3f1);
+    padding: 36px 28px;
+  }
+  .pin h3 { margin: 0 0 8px; font-size: 22px; }
+  .pin p { margin: 0; font-size: 14px; color: #3a3a3c; line-height: 1.5; }
+  .pin .close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 99px;
+    background: rgba(0,0,0,0.55);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+  }
+
+  .settings {
+    width: 460px;
+    border-radius: 12px;
+    background: #ececee;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .settings .titlebar {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    position: relative;
+  }
+  .lights { display: flex; gap: 6px; }
+  .lights i { width: 12px; height: 12px; border-radius: 99px; display: block; }
+  .lights .r { background: #ff5f57; }
+  .lights .y { background: #febc2e; }
+  .lights .g { background: #28c840; }
+  .settings h3 {
+    position: absolute;
+    left: 0; right: 0;
+    text-align: center;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 650;
+  }
+  .settings .body { padding: 4px 16px 18px; }
+  .group-label {
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--secondary);
+    margin: 12px 4px 6px;
+  }
+  .group {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .set-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-bottom: 0.5px solid rgba(0,0,0,0.06);
+  }
+  .set-row:last-child { border-bottom: 0; }
+  .set-row .hint { color: var(--secondary); font-size: 12px; }
+  .switch {
+    width: 36px;
+    height: 22px;
+    border-radius: 99px;
+    background: var(--green);
+    position: relative;
+    flex: none;
+  }
+  .switch i {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 99px;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  .segments { display: flex; background: var(--fill); border-radius: 8px; padding: 2px; }
+  .segments span {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--label);
+    font-variant-numeric: tabular-nums;
+  }
+  .segments span.on { background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.12); font-weight: 650; }
+  .meter { margin: 8px 12px 0; }
+  .meter .track { height: 6px; border-radius: 99px; background: var(--fill); overflow: hidden; }
+  .meter .track i { display: block; width: 43%; height: 100%; background: var(--blue); }
+  .meter .cap {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--secondary);
+    margin-top: 4px;
+  }
+  .help {
+    margin: 8px 4px 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--secondary);
+  }
+  .pill {
+    font-size: 11px;
+    font-weight: 650;
+    padding: 2px 7px;
+    border-radius: 99px;
+  }
+  .pill.ok { background: rgba(52,199,89,0.16); color: #248a3d; }
+  .pill.warn { background: rgba(255,159,10,0.18); color: #b86e00; }
+  .linkish { color: var(--blue); font-size: 12px; }
+
+  .callouts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .callouts p {
+    margin: 0;
+    background: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #3a3a3c;
+  }
+  .callouts strong { color: var(--label); }
+  @media (max-width: 800px) {
+    .callouts { grid-template-columns: 1fr; }
+    .desktop { height: 720px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <h1>主界面设计稿</h1>
+    <p>菜单栏负责开始截图，截完停在选区上再选复制、保存或钉住。历史不是常驻底栏，点「打开历史」或按 ⌘⇧V 才从底部唤出，用完即走。材质跟随 macOS，不另做品牌色。容量按档位选，默认 200 MB。</p>
+    <div class="chips">
+      <span class="chip">独立菜单栏 App</span>
+      <span class="chip">Swift 原生 · 只给自己用</span>
+      <span class="chip">历史按需唤出</span>
+      <span class="chip">默认不抢焦点</span>
+      <span class="chip">超过上限删最早的</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-kicker">01 · 平时</div>
+    <h2>只有菜单栏，底栏不在</h2>
+    <p class="note">平时屏幕上没有历史条。点菜单栏图标只看到截图入口。要找回内容，点「打开历史」，或直接按 ⌘⇧V。</p>
+    <div class="desktop" aria-label="平时没有历史条" style="height: 420px;">
+      <div class="menubar">
+        <span class="apple">&#63743;</span>
+        <span class="appname">访达</span>
+        <span class="status">
+          <span>Wi-Fi</span>
+          <span class="menu-item-hit" title="菜单栏图标">
+            <svg class="glyph" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="2" y="3" width="12" height="10" rx="2" stroke="#1d1d1f" stroke-width="1.4"/>
+              <path d="M5 3.2V2.2M11 3.2V2.2" stroke="#1d1d1f" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M5 8.5l2 2 4-4" stroke="#1d1d1f" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>10月30日 周五 13:54</span>
+        </span>
+      </div>
+      <div class="dropdown" aria-label="菜单">
+        <div class="row"><span>区域截图</span><kbd>⌘⇧1</kbd></div>
+        <div class="row"><span>窗口截图</span><kbd>⌘⇧2</kbd></div>
+        <div class="row"><span>全屏截图</span><kbd>⌘⇧3</kbd></div>
+        <div class="sep"></div>
+        <div class="row on"><span>打开历史</span><kbd>⌘⇧V</kbd></div>
+        <div class="sep"></div>
+        <div class="row"><span>设置…</span><kbd></kbd></div>
+        <div class="row"><span>退出</span><kbd>⌘Q</kbd></div>
+      </div>
+    </div>
+    <div class="callouts">
+      <p><strong>点菜单，不是点出底栏。</strong> 菜单栏图标只开这个菜单。截图从这里进，历史要再点「打开历史」。</p>
+      <p><strong>快捷键不用开菜单。</strong> ⌘⇧V 直接唤出底栏。再按一次、按 Esc，或点条外面，都收起。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-kicker">02 · 唤出之后</div>
+    <h2>需要时才从底部弹出</h2>
+    <p class="note">菜单已经关掉。底栏盖在当前 App 上面，但不抢走焦点，点一条就粘贴回刚才的 App。悬停才出大预览。用完即走，不会留在屏幕上。</p>
+    <div class="desktop" aria-label="唤出的历史条">
+      <div class="menubar">
+        <span class="apple">&#63743;</span>
+        <span class="appname">备忘录</span>
+        <span class="status">
+          <span>Wi-Fi</span>
+          <span class="menu-item-hit" title="菜单栏图标">
+            <svg class="glyph" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="2" y="3" width="12" height="10" rx="2" stroke="#1d1d1f" stroke-width="1.4"/>
+              <path d="M5 3.2V2.2M11 3.2V2.2" stroke="#1d1d1f" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M5 8.5l2 2 4-4" stroke="#1d1d1f" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>10月30日 周五 13:54</span>
+        </span>
+      </div>
+      <div class="preview">
+        <div class="pic"></div>
+        <div class="meta">
+          <strong>昨天 18:22 · 图片</strong>
+          来自 Safari。停在缩略图上才解码这一张预览，移开就释放。
+        </div>
+      </div>
+      <div class="history">
+        <div class="filters" aria-label="筛选">
+          <span class="on">全部</span>
+          <span>文本</span>
+          <span>图片</span>
+          <span>链接</span>
+          <span>颜色</span>
+          <span>截图</span>
+        </div>
+        <div class="scroller">
+          <div class="card shot" title="今天 13:41 截图">
+            <div class="mini-window">
+              <div class="bar"></div>
+              <div class="line"></div>
+              <div class="line short"></div>
+              <div class="line"></div>
+            </div>
+          </div>
+          <div class="card text">明天下午三点，会议室 B。记得带充电器，投影线在抽屉第二格。</div>
+          <div class="card shot"><div class="photo"></div></div>
+          <div class="card link">developer.apple.com<br>NSPasteboard</div>
+          <div class="card color"><div class="swatch"></div><div class="hex">#3D7A5A</div></div>
+          <div class="card text">构建失败：Screen Recording 还没授权，截图入口先灰掉。</div>
+        </div>
+        <div class="side">
+          <div class="usage">
+            <b>86 / 200 MB</b>
+            <em><i></i></em>
+          </div>
+          <div class="search">
+            <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.2" stroke="#6e6e73" stroke-width="1.4" fill="none"/><path d="M10.2 10.2L13 13" stroke="#6e6e73" stroke-width="1.4" stroke-linecap="round"/></svg>
+            搜索
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="callouts">
+      <p><strong>容量就在条上。</strong> 86 / 200 MB 是已用和上限。点它打开设置里的档位，不在条上直接改，避免误触。</p>
+      <p><strong>选中即收起。</strong> 点一条，粘贴回刚才的 App，底栏同时消失。筛选里的「截图」能把截过的图单独找出来。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-kicker">03 · 截图中</div>
+    <h2>选区留下，工具栏贴在下面</h2>
+    <p class="note">布局参考 CleanShot 的「选区下沿一条工具」，外观仍是 macOS 毛玻璃，不做成固定深色。马赛克是当前工具。复制、保存、钉住是同一次截图的三个出口。</p>
+    <div class="desktop" aria-label="截图标注">
+      <div class="menubar">
+        <span class="apple">&#63743;</span>
+        <span class="appname">Safari</span>
+        <span class="status"><span>10月30日 周五 13:54</span></span>
+      </div>
+      <div class="fake-page">
+        <div class="url">developer.apple.com/documentation/appkit/nspasteboard</div>
+        <h3>把剪贴板留在本机</h3>
+        <p>历史只存缩略图引用。原图在沙盒里，超过上限就从最早的条目删起，腾出空间再放入新的。</p>
+        <p>邮箱：hershel@example.com　手机：138 0000 0000</p>
+      </div>
+      <div class="shade-selection">
+        <div class="size-badge">560 × 300</div>
+        <div class="mosaic" title="已打上的马赛克"></div>
+        <i class="handle nw"></i><i class="handle ne"></i><i class="handle sw"></i><i class="handle se"></i>
+      </div>
+      <div class="toolbar" aria-label="标注工具栏">
+        <div class="tool" title="箭头">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M3 13L13 3M13 3H7M13 3v6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tool" title="矩形">
+          <svg width="15" height="15" viewBox="0 0 16 16"><rect x="3" y="4" width="10" height="8" rx="1.2" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+        </div>
+        <div class="tool" title="椭圆">
+          <svg width="15" height="15" viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="5.5" ry="4" stroke="currentColor" stroke-width="1.4" fill="none"/></svg>
+        </div>
+        <div class="tool" title="文字"><span>T</span></div>
+        <div class="tool on" title="马赛克">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M3 8h3v3H3zM6 5h3v3H6zM9 8h3v3H9z" fill="currentColor"/></svg>
+        </div>
+        <div class="tool" title="高亮">
+          <svg width="15" height="15" viewBox="0 0 16 16"><rect x="3" y="8" width="10" height="4" rx="1" fill="currentColor" opacity="0.85"/><path d="M4 8l2-4h4l2 4" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+        </div>
+        <i class="vsep"></i>
+        <div class="tool" title="撤销">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M6 5H3v3M3.5 8a5 5 0 1 0 1.2-3.2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tool" title="重做">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M10 5h3v3M12.5 8a5 5 0 1 1-1.2-3.2" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <i class="vsep"></i>
+        <div class="tool" title="复制">
+          <svg width="15" height="15" viewBox="0 0 16 16"><rect x="5" y="5" width="8" height="8" rx="1.4" stroke="currentColor" stroke-width="1.3" fill="none"/><path d="M3 10V3.5A1.5 1.5 0 0 1 4.5 2H10" stroke="currentColor" stroke-width="1.3" fill="none"/></svg>
+        </div>
+        <div class="tool" title="保存">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tool" title="钉住">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M6 2h4l-.5 4 2.5 2v1H4V8l2.5-2zM8 9v5" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tool" title="丢弃">
+          <svg width="15" height="15" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="callouts">
+      <p><strong>复制</strong>写入剪贴板并进入历史，然后退出截图。<strong>保存</strong>弹出系统保存面板，当场选位置和文件名，同时进入历史。没有默认文件夹设置。取消保存则留在截图里。<strong>钉住</strong>留下浮层，也写入历史。<strong>丢弃</strong>不留。</p>
+      <p><strong>窗口截图</strong>点一下窗口，直接进入这条工具栏。<strong>全屏</strong>不拖框，工具栏改浮在屏幕底部居中，避免画到屏幕外。Esc 取消。</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-kicker">04 · 钉住</div>
+    <h2>工具栏消失，只留图和关闭</h2>
+    <p class="note">钉住不是第二套编辑器。图浮在最前，可拖动。关掉就释放这张解码图。要再找，去历史里的「截图」。</p>
+    <div class="desktop" aria-label="钉在屏幕上" style="height: 460px;">
+      <div class="menubar">
+        <span class="apple">&#63743;</span>
+        <span class="appname">备忘录</span>
+        <span class="status"><span>10月30日 周五 13:54</span></span>
+      </div>
+      <div class="pin">
+        <div class="close" aria-hidden="true">×</div>
+        <div class="body">
+          <h3>会议室 B · 15:00</h3>
+          <p>投影线在抽屉第二格。这张图钉在屏幕上时，历史里已经有同一份，关掉浮层不会删历史。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-kicker">05 · 设置</div>
+    <h2>容量档位</h2>
+    <p class="note">50 / 100 / 200 / 500 MB / 1 GB，默认 200。超过上限时按时间从最早的条目删除，直到放得下新的。单条本身大于上限时不写入，并提示。</p>
+    <div class="desktop plain">
+      <div class="settings" aria-label="设置窗口">
+        <div class="titlebar">
+          <div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+          <h3>设置</h3>
+        </div>
+        <div class="body">
+          <div class="group-label">通用</div>
+          <div class="group">
+            <div class="set-row"><span>开机时启动</span><div class="switch" aria-label="已开启"><i></i></div></div>
+            <div class="set-row"><span>打开历史</span><span class="hint">⌘⇧V</span></div>
+            <div class="set-row"><span>区域 / 窗口 / 全屏</span><span class="hint">⌘⇧1 / ⌘⇧2 / ⌘⇧3</span></div>
+          </div>
+          <div class="group-label">存储</div>
+          <div class="group">
+            <div class="set-row">
+              <span>最大占用</span>
+              <div class="segments" aria-label="容量档位">
+                <span>50</span><span>100</span><span class="on">200</span><span>500</span><span>1 GB</span>
+              </div>
+            </div>
+            <div class="meter">
+              <div class="track"><i></i></div>
+              <div class="cap"><span>已用 86 MB</span><span>上限 200 MB</span></div>
+            </div>
+          </div>
+          <p class="help">超过上限后，按时间从最早的条目开始删除，腾出足够空间再放入新的。单条大于上限时不写入。</p>
+          <div class="group-label">权限</div>
+          <div class="group">
+            <div class="set-row"><span>屏幕录制</span><span class="pill ok">已授权</span></div>
+            <div class="set-row"><span>辅助功能</span><span class="pill warn">未授权</span></div>
+            <div class="set-row"><span class="hint">授予后，选中历史会自动粘贴到当前 App</span><span class="linkish">打开系统设置</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
